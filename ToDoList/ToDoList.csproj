@@ -16,20 +16,19 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.13.0" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="integrationlayer\" />
     <None Remove="System.Configuration.ConfigurationManager" />
-    <None Remove="App.config" />
+    <None Remove="servicelayer\" />
+    <None Remove="tests\" />
+    <None Remove="MongoDB.Driver" />
+    <None Remove="servicelayer\App.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="integrationlayer\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="App.config">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
+    <Folder Include="servicelayer\" />
+    <Folder Include="tests\" />
   </ItemGroup>
 </Project>

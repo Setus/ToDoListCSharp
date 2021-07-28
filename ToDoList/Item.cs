@@ -1,17 +1,22 @@
 ﻿using System;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace ToDoList
 {
     public class Item
     {
-
-        public int id { get; set; }
+        [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+        public int itemId { get; set; }
         public string itemName { get; set; }
         public Boolean done { get; set; }
 
         public Item(int id, string itemName, Boolean done)
         {
-            this.id = id;
+            this.itemId = id;
             this.itemName = itemName;
             this.done = done;
         }
@@ -19,7 +24,7 @@ namespace ToDoList
 
         override public string ToString()
         {
-            return string.Format("Item {0}, {1}, {2}", id, itemName, done);
+            return string.Format("Item {0}, {1}, {2}", itemId, itemName, done);
         }
 
         public override bool Equals(object obj)
@@ -31,13 +36,13 @@ namespace ToDoList
             }
             else
             {
-                return this.id == itemObj.id && this.itemName.Equals(itemObj.itemName) && this.done == itemObj.done;
+                return this.itemId == itemObj.itemId && this.itemName.Equals(itemObj.itemName) && this.done == itemObj.done;
             }
         }
 
         public override int GetHashCode()
         {
-            return this.id.GetHashCode();
+            return this.itemId.GetHashCode();
         }
 
     }

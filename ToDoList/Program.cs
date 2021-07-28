@@ -23,7 +23,7 @@ namespace ToDoList
             //myConnection.OutputDB();
             //myConnection.Close();
 
-            ItemOperations itemOperations = new();
+
 
             //itemOperations.GetAllItems().ForEach(item => Console.WriteLine(item.ToString()));
 

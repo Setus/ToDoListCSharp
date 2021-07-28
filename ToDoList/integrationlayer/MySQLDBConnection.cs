@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using MySql.Data.MySqlClient;
+using ToDoList.integrationlayer;
 
 namespace ToDoList
 
 {
-    public class DBConnection
+    public class MySQLDBConnection : DBConnectionInterface
     {
-        private DBConnection()
+        private MySQLDBConnection()
         {
         }
 
@@ -17,11 +19,11 @@ namespace ToDoList
         public static string UserName { get; set; }
         public static string Password { get; set; }
 
-        public MySqlConnection mySQLConnection { get; set; }
+        private MySqlConnection mySQLConnection { get; set; }
 
-        private static readonly DBConnection _instance = new DBConnection();
+        private static readonly MySQLDBConnection _instance = new();
 
-        public static DBConnection GetSingletonInstance()
+        public static MySQLDBConnection GetSingletonInstance()
         {
             return _instance;
         }
@@ -68,7 +70,7 @@ namespace ToDoList
                     Console.WriteLine(sqlCommand[i]);
                     myCommand.CommandText = sqlCommand[i];
                     myCommand.ExecuteNonQuery();
-                }  
+                }
                 myTrans.Commit();
             }
             catch (Exception e)
@@ -124,7 +126,7 @@ namespace ToDoList
             Close();
         }
 
-        public List<string[]> GetAllItems()
+        public List<Item> GetAllItems()
         {
             CreateNewConnection();
             List<string[]> tableData = new();
@@ -150,10 +152,10 @@ namespace ToDoList
                 Console.WriteLine("Exception details: " + e.GetBaseException());
                 mySQLConnection.Close();
             }
-            return tableData;
+            return ItemMapper.MapToListOfItems(tableData);
         }
 
-        public string[] GetItemWithId(int id)
+        public Item GetSingleItem(int id)
         {
             CreateNewConnection();
             string[] itemColumn = new string[3];
@@ -177,7 +179,8 @@ namespace ToDoList
                 Console.WriteLine("Exception details: " + e.GetBaseException());
                 mySQLConnection.Close();
             }
-            return String.IsNullOrEmpty(itemColumn[0]) ? null : itemColumn;
+            string[] item = String.IsNullOrEmpty(itemColumn[0]) ? null : itemColumn;
+            return ItemMapper.MapToItem(item);
         }
 
         public void OutputDB()
@@ -210,6 +213,25 @@ namespace ToDoList
         {
             mySQLConnection.Close();
             mySQLConnection = null;
+        }
+
+        private string ReadSetting(string key)
+        {
+            string property = null;
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                property = appSettings[key] ?? "Not Found";
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error reading app settings");
+            }
+            if (string.IsNullOrEmpty(property))
+            {
+                throw new ArgumentException("database type must be defined");
+            }
+            return property;
         }
     }
 }
