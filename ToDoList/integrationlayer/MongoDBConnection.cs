@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace ToDoList.integrationlayer
@@ -26,44 +27,69 @@ namespace ToDoList.integrationlayer
             }
         }
 
-        public void AddNewItem(int id, string itemName, int done)
+        public void AddNewItem(Item item)
         {
-
+            Console.WriteLine("Mongodb, called AddNewItem, with the new object: " + item.itemId + ", " + item.itemName + ", " + item.done);
+            CreateNewConnection();
+            itemsCollection.InsertOne(item);
         }
 
-        public void UpdateItem(int id, string itemName, int done)
+        public void UpdateItem(Item item)
         {
-
+            Console.WriteLine("Mongodb, called UpdateItem()");
+            CreateNewConnection();
+            Item oldItem = GetSingleItem(item.itemId);
+            if (oldItem == null)
+            {
+                throw new ArgumentNullException("Trying to update an item that does not exist");
+            }
+            item.Id = oldItem.Id;
+            var result = itemsCollection.ReplaceOne(
+                new BsonDocument("itemId", item.itemId),
+                item,
+                new ReplaceOptions { IsUpsert = false });
+            Console.WriteLine(result);
         }
 
 
         public void DeleteItem(int id)
         {
-
+            Console.WriteLine("Mongodb, called DeleteItem()");
+            CreateNewConnection();
+            itemsCollection.DeleteOne(item => item.itemId == id);
         }
 
         public void DeleteAllDoneItems()
         {
+            Console.WriteLine("Mongodb, called DeleteAllDoneItems()");
+            CreateNewConnection();
+            itemsCollection.DeleteMany(item => item.done);
 
         }
 
         public List<Item> GetAllItems()
         {
-            Console.WriteLine("Calling mongodb GetAllItems");
+            Console.WriteLine("Mongodb, called GetAllItems()");
+            CreateNewConnection();
+
             List<Item> items = itemsCollection.Find(item => true).ToList();
 
             foreach (Item item in items)
             {
                 Console.WriteLine(item.ToString());
             }
-            return null;
+            return items;
         }
 
         public Item GetSingleItem(int id)
         {
+            Console.WriteLine("Mongodb, called GetSingleItem()");
             CreateNewConnection();
-            Console.WriteLine("Calling mongodb GetSingleItem");
             List<Item> items = itemsCollection.Find(item => item.itemId == id).Limit(1).ToList();
+            if (items.Count == 0)
+            {
+                return null;
+            }
             Console.WriteLine(items[0].ToString());
             return items[0];
         }

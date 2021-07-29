@@ -11,7 +11,7 @@ namespace ToDoList
         {
             if (inputTableData.Count == 0)
             {
-                return null;
+                return new List<Item>();
             }
 
             return inputTableData.Select(tableRow => {

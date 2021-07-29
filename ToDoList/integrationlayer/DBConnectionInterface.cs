@@ -5,9 +5,9 @@ namespace ToDoList.integrationlayer
     public interface DBConnectionInterface
     {
 
-        public void AddNewItem(int id, string itemName, int done);
+        public void AddNewItem(Item item);
 
-        public void UpdateItem(int id, string itemName, int done);
+        public void UpdateItem(Item item);
 
         public void DeleteItem(int id);
 

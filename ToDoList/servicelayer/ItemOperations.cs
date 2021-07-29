@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using ToDoList.integrationlayer;
 
 namespace ToDoList
@@ -24,37 +25,32 @@ namespace ToDoList
 
         public void AddNewItem(Item newItem)
         {
-            Console.WriteLine("About to add the new object: " + newItem.ToString());
-            dBConnection.AddNewItem(newItem.itemId, newItem.itemName, newItem.done ? 1 : 0);
+            Console.WriteLine("WILL BE ADDIN THE OBJECT: " + newItem.ToString());
+            dBConnection.AddNewItem(newItem);
         }
 
         public void UpdateItem(Item updatedItem)
         {
-            Console.WriteLine("Called UpdateItem()");
-            dBConnection.UpdateItem(updatedItem.itemId, updatedItem.itemName, updatedItem.done ? 1 : 0);
+            dBConnection.UpdateItem(updatedItem);
         }
 
         public void DeleteItem(Item deletedItem)
         {
-            Console.WriteLine("Called DeleteItem()");
             dBConnection.DeleteItem(deletedItem.itemId);
         }
 
         public void DeleteAllDoneItems()
         {
-            Console.WriteLine("Called DeleteAllDoneItems()");
             dBConnection.DeleteAllDoneItems();
         }
 
         public List<Item> GetAllItems()
         {
-            Console.WriteLine("Called GetAllItems()");
-            return dBConnection.GetAllItems();
+            return dBConnection.GetAllItems().OrderBy(item => item.itemId).ToList();
         }
 
         public Item GetSingleItem(int itemId)
         {
-            Console.WriteLine("Called GetSingleItem()");
             return dBConnection.GetSingleItem(itemId);
         }
 

@@ -97,16 +97,18 @@ namespace ToDoList
             }
         }
 
-        public void AddNewItem(int id, string itemName, int done)
+        public void AddNewItem(Item item)
         {
-            string[] sqlStrings = { string.Format("INSERT INTO Item(itemId, itemName, done) VALUES('{0}', '{1}', '{2}')", id, itemName, done) };
+            Console.WriteLine("MySQL, called AddNewItem, with the new object: " + item.itemId + ", " + item.itemName + ", " + item.done);
+            string[] sqlStrings = { string.Format("INSERT INTO Item(itemId, itemName, done) VALUES('{0}', '{1}', '{2}')", item.itemId, item.itemName, item.done ? 1 : 0) };
             RunSqlTransaction(sqlStrings);
             Close();
         }
 
-        public void UpdateItem(int id, string itemName, int done)
+        public void UpdateItem(Item item)
         {
-            string[] sqlStrings = { string.Format("UPDATE Item SET itemName = '{0}', done = '{1}' WHERE itemId = '{2}'", itemName, done, id) };
+            Console.WriteLine("MySQL, called UpdateItem()");
+            string[] sqlStrings = { string.Format("UPDATE Item SET itemName = '{0}', done = '{1}' WHERE itemId = '{2}'", item.itemName, item.done ? 1 : 0, item.itemId) };
             RunSqlTransaction(sqlStrings);
             Close();
         }
@@ -114,6 +116,7 @@ namespace ToDoList
 
         public void DeleteItem(int id)
         {
+            Console.WriteLine("MySQL, called DeleteItem()");
             string[] sqlStrings = { string.Format("DELETE FROM Item WHERE itemId = '{0}'", id) };
             RunSqlTransaction(sqlStrings);
             Close();
@@ -121,6 +124,7 @@ namespace ToDoList
 
         public void DeleteAllDoneItems()
         {
+            Console.WriteLine("MySQL, called DeleteAllDoneItems()");
             string[] sqlStrings = { string.Format("DELETE FROM Item WHERE done = 1") };
             RunSqlTransaction(sqlStrings);
             Close();
@@ -128,6 +132,7 @@ namespace ToDoList
 
         public List<Item> GetAllItems()
         {
+            Console.WriteLine("MySQL, called GetAllItems()");
             CreateNewConnection();
             List<string[]> tableData = new();
             try
@@ -157,6 +162,7 @@ namespace ToDoList
 
         public Item GetSingleItem(int id)
         {
+            Console.WriteLine("MySQL, called GetSingleItem()");
             CreateNewConnection();
             string[] itemColumn = new string[3];
             try
