@@ -25,13 +25,22 @@ namespace ToDoList
 
         public void AddNewItem(Item newItem)
         {
-            Console.WriteLine("WILL BE ADDIN THE OBJECT: " + newItem.ToString());
             dBConnection.AddNewItem(newItem);
         }
 
         public void UpdateItem(Item updatedItem)
         {
             dBConnection.UpdateItem(updatedItem);
+        }
+
+        public Item GetSingleItem(int itemId)
+        {
+            return dBConnection.GetSingleItem(itemId);
+        }
+
+        public List<Item> GetAllItems()
+        {
+            return dBConnection.GetAllItems().OrderBy(item => item.itemId).ToList();
         }
 
         public void DeleteItem(Item deletedItem)
@@ -44,16 +53,9 @@ namespace ToDoList
             dBConnection.DeleteAllDoneItems();
         }
 
-        public List<Item> GetAllItems()
+        public void DeleteAllItems()
         {
-            return dBConnection.GetAllItems().OrderBy(item => item.itemId).ToList();
+            dBConnection.DeleteAllItems();
         }
-
-        public Item GetSingleItem(int itemId)
-        {
-            return dBConnection.GetSingleItem(itemId);
-        }
-
-
     }
 }

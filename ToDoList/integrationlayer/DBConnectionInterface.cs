@@ -9,12 +9,14 @@ namespace ToDoList.integrationlayer
 
         public void UpdateItem(Item item);
 
+        public Item GetSingleItem(int id);
+
+        public List<Item> GetAllItems();
+
         public void DeleteItem(int id);
 
         public void DeleteAllDoneItems();
 
-        public List<Item> GetAllItems();
-
-        public Item GetSingleItem(int id);
+        public void DeleteAllItems();
     }
 }

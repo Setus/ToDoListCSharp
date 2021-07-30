@@ -64,7 +64,13 @@ namespace ToDoList.integrationlayer
             Console.WriteLine("Mongodb, called DeleteAllDoneItems()");
             CreateNewConnection();
             itemsCollection.DeleteMany(item => item.done);
+        }
 
+        public void DeleteAllItems()
+        {
+            Console.WriteLine("Mongodb, called DeleteAllItems()");
+            CreateNewConnection();
+            itemsCollection.DeleteMany(item => true);
         }
 
         public List<Item> GetAllItems()

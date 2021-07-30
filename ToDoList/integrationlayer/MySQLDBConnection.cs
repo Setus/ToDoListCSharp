@@ -130,6 +130,14 @@ namespace ToDoList
             Close();
         }
 
+        public void DeleteAllItems()
+        {
+            Console.WriteLine("MySQL, called DeleteAllItems()");
+            string[] sqlStrings = { string.Format("DELETE FROM Item") };
+            RunSqlTransaction(sqlStrings);
+            Close();
+        }
+
         public List<Item> GetAllItems()
         {
             Console.WriteLine("MySQL, called GetAllItems()");
