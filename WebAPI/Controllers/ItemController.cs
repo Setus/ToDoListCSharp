@@ -20,12 +20,20 @@ namespace WebAPI.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/item/get
+        // GET api/item/getall
         [HttpGet()]
-        [Route("get")]
-        public string Get()
+        [Route("getall")]
+        public string GetAll()
         {
             return webItem.GetAllItems();
+        }
+
+        // GET api/item/getsingle
+        [HttpGet()]
+        [Route("getsingle")]
+        public string GetSingle(int itemId)
+        {
+            return webItem.GetSingleItem(itemId);
         }
 
         // POST api/item/create

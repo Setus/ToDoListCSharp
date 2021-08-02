@@ -116,7 +116,7 @@ namespace ToDoList
 
         public void DeleteItem(int id)
         {
-            Console.WriteLine("MySQL, called DeleteItem()");
+            Console.WriteLine("MySQL, called DeleteItem() with itemId: " + id);
             string[] sqlStrings = { string.Format("DELETE FROM Item WHERE itemId = '{0}'", id) };
             RunSqlTransaction(sqlStrings);
             Close();

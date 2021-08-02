@@ -47,5 +47,11 @@ namespace ToDoList
             return this.itemId.GetHashCode();
         }
 
+        public string ToJson()
+        {
+            string main = string.Format("\"itemId\": {0}, \"itemName\": \"{1}\", \"done\": {2}", itemId, itemName, done);
+            return "{" + main + "}";
+        }
+
     }
 }

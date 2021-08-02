@@ -56,15 +56,15 @@ namespace ToDoList
 
             itemOperations.AddNewItem(testItem0);
 
-            Assert.IsTrue(itemOperations.GetSingleItem(testItem0.itemId).Equals(testItem0));
+            Assert.AreEqual(itemOperations.GetSingleItem(testItem0.itemId), testItem0);
 
             itemOperations.UpdateItem(testItem1);
 
-            Assert.IsTrue(itemOperations.GetSingleItem(testItem1.itemId).Equals(testItem1));
+            Assert.AreEqual(itemOperations.GetSingleItem(testItem1.itemId), testItem1);
 
             itemOperations.UpdateItem(testItem2);
 
-            Assert.IsTrue(itemOperations.GetSingleItem(testItem2.itemId).Equals(testItem2));
+            Assert.AreEqual(itemOperations.GetSingleItem(testItem2.itemId), testItem2);
 
             itemOperations.DeleteItem(testItem2);
 
@@ -92,18 +92,18 @@ namespace ToDoList
             itemOperations.AddNewItem(testItem1);
             itemOperations.AddNewItem(testItem2);
 
-            Assert.IsTrue(itemOperations.GetSingleItem(testItem0.itemId).Equals(testItem0));
-            Assert.IsTrue(itemOperations.GetSingleItem(testItem1.itemId).Equals(testItem1));
-            Assert.IsTrue(itemOperations.GetSingleItem(testItem2.itemId).Equals(testItem2));
+            Assert.AreEqual(itemOperations.GetSingleItem(testItem0.itemId), testItem0);
+            Assert.AreEqual(itemOperations.GetSingleItem(testItem1.itemId), testItem1);
+            Assert.AreEqual(itemOperations.GetSingleItem(testItem2.itemId), testItem2);
 
             listOfItems = itemOperations.GetAllItems();
             foreach (Item item in listOfItems)
             {
                 Console.WriteLine(item.ToString());
             }
-            Assert.IsTrue(listOfItems[0].Equals(testItem0));
-            Assert.IsTrue(listOfItems[1].Equals(testItem1));
-            Assert.IsTrue(listOfItems[2].Equals(testItem2));
+            Assert.AreEqual(listOfItems[0], testItem0);
+            Assert.AreEqual(listOfItems[1], testItem1);
+            Assert.AreEqual(listOfItems[2], testItem2);
 
             itemOperations.DeleteItem(testItem0);
             itemOperations.DeleteItem(testItem1);
@@ -136,9 +136,9 @@ namespace ToDoList
             {
                 Console.WriteLine(item.ToString());
             }
-            Assert.IsTrue(listOfItems[0].Equals(testItem0));
-            Assert.IsTrue(listOfItems[1].Equals(testItem1));
-            Assert.IsTrue(listOfItems[2].Equals(testItem2));
+            Assert.AreEqual(listOfItems[0], testItem0);
+            Assert.AreEqual(listOfItems[1], testItem1);
+            Assert.AreEqual(listOfItems[2], testItem2);
 
             itemOperations.DeleteItem(testItem0);
             itemOperations.DeleteItem(testItem1);
@@ -164,15 +164,15 @@ namespace ToDoList
             itemOperations.AddNewItem(testItem1);
             itemOperations.AddNewItem(testItem2);
 
-            Assert.IsTrue(itemOperations.GetSingleItem(testItem0.itemId).Equals(testItem0));
-            Assert.IsTrue(itemOperations.GetSingleItem(testItem1.itemId).Equals(testItem1));
-            Assert.IsTrue(itemOperations.GetSingleItem(testItem2.itemId).Equals(testItem2));
+            Assert.AreEqual(itemOperations.GetSingleItem(testItem0.itemId), testItem0);
+            Assert.AreEqual(itemOperations.GetSingleItem(testItem1.itemId), testItem1);
+            Assert.AreEqual(itemOperations.GetSingleItem(testItem2.itemId), testItem2);
 
             itemOperations.DeleteAllDoneItems();
 
-            Assert.IsTrue(itemOperations.GetAllItems().Count == 1);
+            Assert.AreEqual(itemOperations.GetAllItems().Count, 1);
 
-            Assert.IsTrue(itemOperations.GetSingleItem(testItem1.itemId).Equals(testItem1));
+            Assert.AreEqual(itemOperations.GetSingleItem(testItem1.itemId), testItem1);
 
             itemOperations.DeleteItem(testItem1);
             Assert.IsNull(itemOperations.GetSingleItem(testItem1.itemId));

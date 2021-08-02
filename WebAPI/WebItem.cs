@@ -36,6 +36,11 @@ namespace WebAPI
             return JsonConvert.SerializeObject(itemOperations.GetAllItems());
         }
 
+        public string GetSingleItem(int itemId)
+        {
+            return JsonConvert.SerializeObject(itemOperations.GetSingleItem(itemId));
+        }
+
         public void DeleteAllDone()
         {
             itemOperations.DeleteAllDoneItems();

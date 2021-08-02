@@ -54,7 +54,7 @@ namespace ToDoList.integrationlayer
 
         public void DeleteItem(int id)
         {
-            Console.WriteLine("Mongodb, called DeleteItem()");
+            Console.WriteLine("Mongodb, called DeleteItem() with itemId: " + id);
             CreateNewConnection();
             itemsCollection.DeleteOne(item => item.itemId == id);
         }
