@@ -105,13 +105,13 @@ namespace ToDoList
             Assert.AreEqual(listOfItems[1], testItem1);
             Assert.AreEqual(listOfItems[2], testItem2);
 
-            //itemOperations.DeleteItem(testItem0);
-            //itemOperations.DeleteItem(testItem1);
-            //itemOperations.DeleteItem(testItem2);
+            itemOperations.DeleteItem(testItem0);
+            itemOperations.DeleteItem(testItem1);
+            itemOperations.DeleteItem(testItem2);
 
-            //Assert.IsNull(itemOperations.GetSingleItem(testItem0.itemId));
-            //Assert.IsNull(itemOperations.GetSingleItem(testItem1.itemId));
-            //Assert.IsNull(itemOperations.GetSingleItem(testItem2.itemId));
+            Assert.IsNull(itemOperations.GetSingleItem(testItem0.itemId));
+            Assert.IsNull(itemOperations.GetSingleItem(testItem1.itemId));
+            Assert.IsNull(itemOperations.GetSingleItem(testItem2.itemId));
         }
 
         public void TestGetAllItemsReturnsItemsInItemIdOrder(string databasetype)
