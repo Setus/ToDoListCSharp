@@ -18,6 +18,8 @@ namespace WebAPI
 
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
+        string[] allowedUrls = new string[] { "http://localhost:3000", "http://localhost:4200" };
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -33,7 +35,7 @@ namespace WebAPI
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:3000")
+                                      builder.WithOrigins(allowedUrls)
                                       .AllowAnyHeader()
                                       .AllowAnyMethod();
                                   });
