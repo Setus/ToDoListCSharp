@@ -9,39 +9,42 @@ namespace ToDoList
     [TestFixture]
     class ItemOperationsTest
     {
+        string mysql = "mysql";
+        string mongodb = "mongodb";
+
         [Test]
         public void TestCRUDOperations()
         {
-            TestCRUDOperations("mysql");
-            TestCRUDOperations("mongodb");
+            TestCRUDOperations(mysql);
+            TestCRUDOperations(mongodb);
         }
 
         [Test]
         public void TestGetAllItems()
         {
-            //TestGetAllItems("mysql");
-            TestGetAllItems("mongodb");
+            TestGetAllItems(mysql);
+            TestGetAllItems(mongodb);
         }
 
         [Test]
         public void TestGetAllItemsReturnsItemsInItemIdOrder()
         {
-            TestGetAllItemsReturnsItemsInItemIdOrder("mysql");
-            TestGetAllItemsReturnsItemsInItemIdOrder("mongodb");
+            TestGetAllItemsReturnsItemsInItemIdOrder(mysql);
+            TestGetAllItemsReturnsItemsInItemIdOrder(mongodb);
         }
 
         [Test]
         public void TestDeleteAllDone()
         {
-            TestDeleteAllDone("mysql");
-            TestDeleteAllDone("mongodb");
+            TestDeleteAllDone(mysql);
+            TestDeleteAllDone(mongodb);
         }
 
         [Test]
         public void TestDeleteAllItems()
         {
-            TestDeleteAllItems("mysql");
-            TestDeleteAllItems("mongodb");
+            TestDeleteAllItems(mysql);
+            TestDeleteAllItems(mongodb);
         }
 
         public void TestCRUDOperations(string databasetype)
