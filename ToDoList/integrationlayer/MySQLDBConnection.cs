@@ -1,47 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using MySql.Data.MySqlClient;
 using ToDoList.integrationlayer;
 
 namespace ToDoList
 
 {
-    public class MySQLDBConnection : DBConnectionInterface
+    public class MySQLDBConnection : IDBConnection
     {
-        private MySQLDBConnection()
-        {
-        }
 
-        public static string Server { get; set; }
-        public static string Port { get; set; }
-        public static string DatabaseName { get; set; }
-        public static string UserName { get; set; }
-        public static string Password { get; set; }
+        public static string Server { get; set; } = "localhost";
+        public static string Port { get; set; } = "3306";
+        public static string DatabaseName { get; set; } = "toDoListSchema";
+        public static string UserName { get; set; } = "devuser";
+        public static string Password { get; set; } = "abc123";
 
         private MySqlConnection mySQLConnection { get; set; }
-
-        private static readonly MySQLDBConnection _instance = new();
-
-        public static MySQLDBConnection GetSingletonInstance()
-        {
-            return _instance;
-        }
-
-        private static void ConnectionDetails()
-        {
-            Server = "localhost";
-            Port = "3306";
-            DatabaseName = "toDoListSchema";
-            UserName = "devuser";
-            Password = "abc123";
-        }
 
         public void CreateNewConnection()
         {
             if (mySQLConnection == null)
             {
-                ConnectionDetails();
                 mySQLConnection = new MySqlConnection(string.Format(
                     "Server={0}; Port={1}; database={2}; UID={3}; password={4}",
                     Server, Port, DatabaseName, UserName, Password));
@@ -54,12 +33,7 @@ namespace ToDoList
             CreateNewConnection();
 
             MySqlCommand myCommand = mySQLConnection.CreateCommand();
-
-            // Start a local transaction
             MySqlTransaction myTrans = mySQLConnection.BeginTransaction();
-
-            // Must assign both transaction object and connection
-            // to Command object for a pending local transaction
             myCommand.Connection = mySQLConnection;
             myCommand.Transaction = myTrans;
 
@@ -227,25 +201,6 @@ namespace ToDoList
         {
             mySQLConnection.Close();
             mySQLConnection = null;
-        }
-
-        private string ReadSetting(string key)
-        {
-            string property = null;
-            try
-            {
-                var appSettings = ConfigurationManager.AppSettings;
-                property = appSettings[key] ?? "Not Found";
-            }
-            catch (ConfigurationErrorsException)
-            {
-                Console.WriteLine("Error reading app settings");
-            }
-            if (string.IsNullOrEmpty(property))
-            {
-                throw new ArgumentException("database type must be defined");
-            }
-            return property;
         }
     }
 }

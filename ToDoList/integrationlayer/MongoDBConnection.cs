@@ -5,17 +5,10 @@ using MongoDB.Driver;
 
 namespace ToDoList.integrationlayer
 {
-    public class MongoDBConnection : DBConnectionInterface
+    public class MongoDBConnection : IDBConnection
     {
 
         private IMongoCollection<Item> itemsCollection = null;
-
-        private static readonly MongoDBConnection _instance = new();
-
-        public static MongoDBConnection GetSingletonInstance()
-        {
-            return _instance;
-        }
 
         public void CreateNewConnection()
         {

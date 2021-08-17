@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ToDoList;
+using ToDoList.servicelayer;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,7 +14,12 @@ namespace WebAPI.Controllers
     public class ItemController : Controller
     {
 
-        WebItem webItem = new();
+        IOperations itemOperations;
+
+        public ItemController(IOperations itemOperations)
+        {
+            this.itemOperations = itemOperations;
+        }
 
         // GET: api/item
         [HttpGet]
@@ -25,7 +33,7 @@ namespace WebAPI.Controllers
         [Route("getall")]
         public string GetAll()
         {
-            return webItem.GetAllItems();
+            return JsonConvert.SerializeObject(itemOperations.GetAllItems());
         }
 
         // GET api/item/getsingle
@@ -33,7 +41,7 @@ namespace WebAPI.Controllers
         [Route("getsingle")]
         public string GetSingle(int itemId)
         {
-            return webItem.GetSingleItem(itemId);
+            return JsonConvert.SerializeObject(itemOperations.GetSingleItem(itemId));
         }
 
         // POST api/item/create
@@ -41,7 +49,7 @@ namespace WebAPI.Controllers
         [Route("create")]
         public void Create([FromBody] JObject payload)
         {
-            webItem.AddNewItem(payload);
+            itemOperations.AddNewItem(JsonConvert.DeserializeObject<Item>(payload.ToString()));
         }
 
         // POST api/item/update
@@ -49,7 +57,7 @@ namespace WebAPI.Controllers
         [Route("update")]
         public void Update([FromBody] JObject payload)
         {
-            webItem.UpdateItem(payload);
+            itemOperations.UpdateItem(JsonConvert.DeserializeObject<Item>(payload.ToString()));
         }
 
         // DELETE api/item/delete
@@ -57,7 +65,7 @@ namespace WebAPI.Controllers
         [Route("delete")]
         public void Delete([FromBody] JObject payload)
         {
-            webItem.DeleteItem(payload);
+            itemOperations.DeleteItem(JsonConvert.DeserializeObject<Item>(payload.ToString()));
         }
 
         // DELETE api/item/deletealldone
@@ -65,7 +73,7 @@ namespace WebAPI.Controllers
         [Route("deletealldone")]
         public void DeleteAllDone()
         {
-            webItem.DeleteAllDone();
+            itemOperations.DeleteAllDoneItems();
         }
     }
 }

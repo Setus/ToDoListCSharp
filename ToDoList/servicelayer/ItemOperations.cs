@@ -3,59 +3,89 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using ToDoList.integrationlayer;
+using ToDoList.servicelayer;
 
 namespace ToDoList
 {
-    public class ItemOperations
+    public class ItemOperations : IOperations
     {
 
-        public DBConnectionInterface dBConnection;
+        public IDBConnection dbConnection;
 
-        public ItemOperations(string databaseType)
+        public ItemOperations(IEnumerable<IDBConnection> dbConnections)
         {
-            if (databaseType.Equals("mongodb"))
+            var connections = dbConnections.ToArray();
+            if (ReadDatabaseSetting().Equals("mysql"))
             {
-                dBConnection = MongoDBConnection.GetSingletonInstance();
+                dbConnection = connections[0];
             }
             else
             {
-                dBConnection = MySQLDBConnection.GetSingletonInstance();
+                dbConnection = connections[1];
             }
         }
 
         public void AddNewItem(Item newItem)
         {
-            dBConnection.AddNewItem(newItem);
+            dbConnection.AddNewItem(newItem);
         }
 
         public void UpdateItem(Item updatedItem)
         {
-            dBConnection.UpdateItem(updatedItem);
+            dbConnection.UpdateItem(updatedItem);
         }
 
         public Item GetSingleItem(int itemId)
         {
-            return dBConnection.GetSingleItem(itemId);
+            return dbConnection.GetSingleItem(itemId);
         }
 
         public List<Item> GetAllItems()
         {
-            return dBConnection.GetAllItems().OrderBy(item => item.itemId).ToList();
+            return dbConnection.GetAllItems().OrderBy(item => item.itemId).ToList();
         }
 
         public void DeleteItem(Item deletedItem)
         {
-            dBConnection.DeleteItem(deletedItem.itemId);
+            dbConnection.DeleteItem(deletedItem.itemId);
         }
 
         public void DeleteAllDoneItems()
         {
-            dBConnection.DeleteAllDoneItems();
+            dbConnection.DeleteAllDoneItems();
         }
 
         public void DeleteAllItems()
         {
-            dBConnection.DeleteAllItems();
+            dbConnection.DeleteAllItems();
+        }
+
+        private string ReadDatabaseSetting()
+        {
+            string key = "DatabaseType";
+            string property = null;
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+
+                foreach (var thing in appSettings)
+                {
+                    Console.WriteLine(thing);
+                }
+                Console.WriteLine(appSettings.Count);
+                property = appSettings[key] ?? throw new ArgumentException("database type is missing in app.config");
+
+                Console.WriteLine("The property is: " + property);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error reading app settings");
+            }
+            if (string.IsNullOrEmpty(property))
+            {
+                throw new ArgumentException("database type must be defined");
+            }
+            return property;
         }
     }
 }

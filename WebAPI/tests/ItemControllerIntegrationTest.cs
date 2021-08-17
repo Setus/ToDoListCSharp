@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using ToDoList;
+using ToDoList.integrationlayer;
 using WebAPI.Controllers;
 
 namespace WebAPI
@@ -13,6 +14,7 @@ namespace WebAPI
     [TestFixture]
     class ItemControllerIntegrationTest
     {
+        List<IDBConnection> iDBConnections = null;
 
         [Test]
         public void TestCRUDOperations()
@@ -39,7 +41,8 @@ namespace WebAPI
         {
             Console.WriteLine("Runnig test with database type: " + databasetype);
             ConfigurationManager.AppSettings["DatabaseType"] = databasetype;
-            ItemOperations itemOperations = new(databasetype);
+
+            ItemOperations itemOperations = new(GetIDBConnections());
 
             Assert.AreEqual(itemOperations.GetAllItems().Count, 0);
 
@@ -47,7 +50,7 @@ namespace WebAPI
             Item testItem1 = new(100, "Update item name", false);
             Item testItem2 = new(100, "Update item NAME and done", true);
 
-            ItemController itemController = new ItemController();
+            ItemController itemController = new ItemController(itemOperations);
 
             itemController.Create(JObject.Parse(JsonConvert.SerializeObject(testItem0)));
 
@@ -86,7 +89,8 @@ namespace WebAPI
         {
             Console.WriteLine("Runnig test with database type: " + databasetype);
             ConfigurationManager.AppSettings["DatabaseType"] = databasetype;
-            ItemOperations itemOperations = new(databasetype);
+
+            ItemOperations itemOperations = new(GetIDBConnections());
 
             // Cannot run this test if there already exists items in the database.
             Assert.AreEqual(itemOperations.GetAllItems().Count, 0);
@@ -106,7 +110,7 @@ namespace WebAPI
 
             Assert.AreEqual(itemOperations.GetAllItems().Count, 3);
 
-            ItemController itemController = new ItemController();
+            ItemController itemController = new ItemController(itemOperations);
             string jsonOutput = itemController.GetAll();
             Console.WriteLine("JsonOutput: " + jsonOutput);
 
@@ -126,7 +130,8 @@ namespace WebAPI
         {
             Console.WriteLine("Runnig test with database type: " + databasetype);
             ConfigurationManager.AppSettings["DatabaseType"] = databasetype;
-            ItemOperations itemOperations = new(databasetype);
+
+            ItemOperations itemOperations = new(GetIDBConnections());
 
             // Cannot run this test if there already exists items in the database.
             Assert.AreEqual(itemOperations.GetAllItems().Count, 0);
@@ -141,7 +146,7 @@ namespace WebAPI
 
             Assert.AreEqual(itemOperations.GetAllItems().Count, 3);
 
-            ItemController itemController = new ItemController();
+            ItemController itemController = new ItemController(itemOperations);
             itemController.DeleteAllDone();
 
             Assert.AreEqual(itemOperations.GetAllItems().Count, 1);
@@ -149,6 +154,17 @@ namespace WebAPI
             Assert.AreEqual(itemOperations.GetSingleItem(testItem1.itemId), testItem1);
 
             itemOperations.DeleteAllItems();
+        }
+
+        public IEnumerable<IDBConnection> GetIDBConnections()
+        {
+            if (iDBConnections == null || iDBConnections.Count == 0)
+            {
+                iDBConnections = new();
+                iDBConnections.Add(new MySQLDBConnection());
+                iDBConnections.Add(new MongoDBConnection());
+            }
+            return iDBConnections;
         }
     }
 }

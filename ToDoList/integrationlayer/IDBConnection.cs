@@ -2,9 +2,8 @@
 
 namespace ToDoList.integrationlayer
 {
-    public interface DBConnectionInterface
+    public interface IDBConnection
     {
-
         public void AddNewItem(Item item);
 
         public void UpdateItem(Item item);

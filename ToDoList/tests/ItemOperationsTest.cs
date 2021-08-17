@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using NUnit.Framework;
-
+using ToDoList.integrationlayer;
 
 namespace ToDoList
 {
@@ -11,6 +12,7 @@ namespace ToDoList
     {
         string mysql = "mysql";
         string mongodb = "mongodb";
+        List<IDBConnection> iDBConnections = null;
 
         [Test]
         public void TestCRUDOperations()
@@ -50,7 +52,9 @@ namespace ToDoList
         public void TestCRUDOperations(string databasetype)
         {
             Console.WriteLine("Runnig test with database type: " + databasetype);
-            ItemOperations itemOperations = new(databasetype);
+            ConfigurationManager.AppSettings["DatabaseType"] = databasetype;
+
+            ItemOperations itemOperations = new(GetIDBConnections());
             Item testItem0 = new(100, "Test item", false);
             Item testItem1 = new(100, "Update item name", false);
             Item testItem2 = new(100, "Update item NAME and done", true);
@@ -77,7 +81,9 @@ namespace ToDoList
         public void TestGetAllItems(string databasetype)
         {
             Console.WriteLine("Runnig test with database type: " + databasetype);
-            ItemOperations itemOperations = new(databasetype);
+            ConfigurationManager.AppSettings["DatabaseType"] = databasetype;
+
+            ItemOperations itemOperations = new(GetIDBConnections());
 
             List<Item> listOfItems = itemOperations.GetAllItems();
             // Cannot run this test if there already exists items in the database.
@@ -120,7 +126,9 @@ namespace ToDoList
         public void TestGetAllItemsReturnsItemsInItemIdOrder(string databasetype)
         {
             Console.WriteLine("Runnig test with database type: " + databasetype);
-            ItemOperations itemOperations = new(databasetype);
+            ConfigurationManager.AppSettings["DatabaseType"] = databasetype;
+
+            ItemOperations itemOperations = new(GetIDBConnections());
 
             List<Item> listOfItems = itemOperations.GetAllItems();
             // Cannot run this test if there already exists items in the database.
@@ -154,7 +162,9 @@ namespace ToDoList
         public void TestDeleteAllDone(string databasetype)
         {
             Console.WriteLine("Runnig test with database type: " + databasetype);
-            ItemOperations itemOperations = new(databasetype);
+            ConfigurationManager.AppSettings["DatabaseType"] = databasetype;
+
+            ItemOperations itemOperations = new(GetIDBConnections());
 
             // Cannot run this test if there already exists items in the database.
             Assert.IsTrue(itemOperations.GetAllItems().Count == 0);
@@ -184,7 +194,9 @@ namespace ToDoList
         public void TestDeleteAllItems(string databasetype)
         {
             Console.WriteLine("Runnig test with database type: " + databasetype);
-            ItemOperations itemOperations = new(databasetype);
+            ConfigurationManager.AppSettings["DatabaseType"] = databasetype;
+
+            ItemOperations itemOperations = new(GetIDBConnections());
 
             // Cannot run this test if there already exists items in the database.
             Assert.IsTrue(itemOperations.GetAllItems().Count == 0);
@@ -203,5 +215,17 @@ namespace ToDoList
 
             Assert.IsTrue(itemOperations.GetAllItems().Count == 0);
         }
+
+        public IEnumerable<IDBConnection> GetIDBConnections()
+        {
+            if (iDBConnections == null || iDBConnections.Count == 0) {
+                iDBConnections = new();
+                iDBConnections.Add(new MySQLDBConnection());
+                iDBConnections.Add(new MongoDBConnection());
+            }
+            return iDBConnections;
+        }
     }
+
+
 }

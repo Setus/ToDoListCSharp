@@ -17,6 +17,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.13.0" />
+    <PackageReference Include="Autofac" Version="6.2.0" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="integrationlayer\" />
@@ -25,6 +26,7 @@
     <None Remove="tests\" />
     <None Remove="MongoDB.Driver" />
     <None Remove="servicelayer\App.config" />
+    <None Remove="Autofac" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="integrationlayer\" />
