@@ -6,11 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ToDoList\ToDoList.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="Newtonsoft.Json" />
     <None Remove="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
     <None Remove="System.Configuration.ConfigurationManager" />
@@ -19,6 +14,12 @@
     <None Remove="NUnit3TestAdapter" />
     <None Remove="Microsoft.NET.Test.Sdk" />
     <None Remove="Autofac" />
+    <None Remove="integrationlayer\" />
+    <None Remove="servicelayer\" />
+    <None Remove="MongoDB.Bson" />
+    <None Remove="MongoDB.Driver" />
+    <None Remove="MySql.Data" />
+    <None Remove="modellayer\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -28,8 +29,14 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.13.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.13.1" />
+    <PackageReference Include="MySql.Data" Version="8.0.26" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="tests\" />
+    <Folder Include="integrationlayer\" />
+    <Folder Include="servicelayer\" />
+    <Folder Include="modellayer\" />
   </ItemGroup>
 </Project>
