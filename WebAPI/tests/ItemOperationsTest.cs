@@ -73,9 +73,9 @@ namespace ToDoList
 
             Assert.AreEqual(itemOperations.GetSingleItem(testItem2.itemId), testItem2);
 
-            //itemOperations.DeleteItem(testItem2);
+            itemOperations.DeleteItem(testItem2);
 
-            //Assert.IsNull(itemOperations.GetSingleItem(testItem2.itemId));
+            Assert.IsNull(itemOperations.GetSingleItem(testItem2.itemId));
         }
 
         public void TestGetAllItems(string databasetype)
