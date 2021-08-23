@@ -14,8 +14,6 @@ namespace WebAPI
 
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-        string[] allowedUrls = new string[] { "http://localhost:3000", "http://localhost:4200" };
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -26,12 +24,15 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins(allowedUrls)
+                                      builder.WithOrigins(GetAllowedOrigins())
                                       .AllowAnyHeader()
                                       .AllowAnyMethod();
                                   });
@@ -61,6 +62,15 @@ namespace WebAPI
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private string[] GetAllowedOrigins()
+        {
+            return new string[] {
+                AppConfigUtil.ReadDatabaseSetting("trustedUrl1", false),
+                AppConfigUtil.ReadDatabaseSetting("trustedUrl2", false),
+                AppConfigUtil.ReadDatabaseSetting("trustedUrl3", false)
+            };
         }
     }
 }

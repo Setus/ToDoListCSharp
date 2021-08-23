@@ -14,27 +14,29 @@ namespace WebAPI
     [TestFixture]
     class ItemControllerIntegrationTest
     {
+        string mysql = "mysql";
+        string mongodb = "mongodb";
         List<IDBConnection> iDBConnections = null;
 
         [Test]
         public void TestCRUDOperations()
         {
-            TestCRUDOperations("mysql");
-            TestCRUDOperations("mongodb");
+            TestCRUDOperations(mysql);
+            TestCRUDOperations(mongodb);
         }
 
         [Test]
         public void TestGetAllItems()
         {
-            TestGetAllItems("mysql");
-            TestGetAllItems("mongodb");
+            TestGetAllItems(mysql);
+            TestGetAllItems(mongodb);
         }
 
         [Test]
         public void TestDeleteAllDone()
         {
-            TestDeleteAllDone("mysql");
-            TestDeleteAllDone("mongodb");
+            TestDeleteAllDone(mysql);
+            TestDeleteAllDone(mongodb);
         }
 
         public void TestCRUDOperations(string databasetype)

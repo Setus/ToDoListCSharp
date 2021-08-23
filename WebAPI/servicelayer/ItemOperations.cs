@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ToDoList.integrationlayer;
 using ToDoList.servicelayer;
+using WebAPI;
 
 namespace ToDoList
 {
@@ -15,7 +14,7 @@ namespace ToDoList
         public ItemOperations(IEnumerable<IDBConnection> dbConnections)
         {
             var connections = dbConnections.ToArray();
-            if (ReadDatabaseSetting().Equals("mysql"))
+            if (AppConfigUtil.ReadDatabaseSetting("DatabaseType", true).Equals("mysql"))
             {
                 dbConnection = connections[0];
             }
@@ -60,32 +59,5 @@ namespace ToDoList
             dbConnection.DeleteAllItems();
         }
 
-        private string ReadDatabaseSetting()
-        {
-            string key = "DatabaseType";
-            string property = null;
-            try
-            {
-                var appSettings = ConfigurationManager.AppSettings;
-
-                foreach (var thing in appSettings)
-                {
-                    Console.WriteLine(thing);
-                }
-                Console.WriteLine(appSettings.Count);
-                property = appSettings[key] ?? throw new ArgumentException("database type is missing in app.config");
-
-                Console.WriteLine("The property is: " + property);
-            }
-            catch (ConfigurationErrorsException)
-            {
-                Console.WriteLine("Error reading app settings");
-            }
-            if (string.IsNullOrEmpty(property))
-            {
-                throw new ArgumentException("database type must be defined");
-            }
-            return property;
-        }
     }
 }
