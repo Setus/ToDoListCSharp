@@ -32,7 +32,7 @@ namespace WebAPI
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins(GetAllowedOrigins())
+                                      builder.WithOrigins("*")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod();
                                   });
@@ -62,15 +62,6 @@ namespace WebAPI
             {
                 endpoints.MapControllers();
             });
-        }
-
-        private string[] GetAllowedOrigins()
-        {
-            return new string[] {
-                AppConfigUtil.ReadDatabaseSetting("trustedUrl1", false),
-                AppConfigUtil.ReadDatabaseSetting("trustedUrl2", false),
-                AppConfigUtil.ReadDatabaseSetting("trustedUrl3", false)
-            };
         }
     }
 }
