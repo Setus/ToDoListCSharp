@@ -2,51 +2,56 @@
 using System.Collections.Generic;
 using System.Configuration;
 using NUnit.Framework;
-using ToDoList.integrationlayer;
+using WebAPI.integrationlayer;
+using WebAPI.modellayer;
 
-namespace ToDoList
+namespace WebAPI
 {
 
     [TestFixture]
     class ItemOperationsTest
     {
-        string mysql = "mysql";
-        string mongodb = "mongodb";
+
         List<IDBConnection> iDBConnections = null;
 
         [Test]
         public void TestCRUDOperations()
         {
-            TestCRUDOperations(mysql);
-            TestCRUDOperations(mongodb);
+            TestCRUDOperations(DatabaseType.mysql.ToString());
+            TestCRUDOperations(DatabaseType.mongodb.ToString());
+            TestCRUDOperations(DatabaseType.azuresql.ToString());
         }
 
         [Test]
         public void TestGetAllItems()
         {
-            TestGetAllItems(mysql);
-            TestGetAllItems(mongodb);
+            TestGetAllItems(DatabaseType.mysql.ToString());
+            TestGetAllItems(DatabaseType.mongodb.ToString());
+            TestGetAllItems(DatabaseType.azuresql.ToString());
         }
 
         [Test]
         public void TestGetAllItemsReturnsItemsInItemIdOrder()
         {
-            TestGetAllItemsReturnsItemsInItemIdOrder(mysql);
-            TestGetAllItemsReturnsItemsInItemIdOrder(mongodb);
+            TestGetAllItemsReturnsItemsInItemIdOrder(DatabaseType.mysql.ToString());
+            TestGetAllItemsReturnsItemsInItemIdOrder(DatabaseType.mongodb.ToString());
+            TestGetAllItemsReturnsItemsInItemIdOrder(DatabaseType.azuresql.ToString());
         }
 
         [Test]
         public void TestDeleteAllDone()
         {
-            TestDeleteAllDone(mysql);
-            TestDeleteAllDone(mongodb);
+            TestDeleteAllDone(DatabaseType.mysql.ToString());
+            TestDeleteAllDone(DatabaseType.mongodb.ToString());
+            TestDeleteAllDone(DatabaseType.azuresql.ToString());
         }
 
         [Test]
         public void TestDeleteAllItems()
         {
-            TestDeleteAllItems(mysql);
-            TestDeleteAllItems(mongodb);
+            TestDeleteAllItems(DatabaseType.mysql.ToString());
+            TestDeleteAllItems(DatabaseType.mongodb.ToString());
+            TestDeleteAllItems(DatabaseType.azuresql.ToString());
         }
 
         public void TestCRUDOperations(string databasetype)
@@ -222,6 +227,7 @@ namespace ToDoList
                 iDBConnections = new();
                 iDBConnections.Add(new MySQLDBConnection());
                 iDBConnections.Add(new MongoDBConnection());
+                iDBConnections.Add(new AzureSQLDBConnection());
             }
             return iDBConnections;
         }

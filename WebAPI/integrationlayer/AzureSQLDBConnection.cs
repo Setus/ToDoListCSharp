@@ -1,29 +1,41 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.Collections.Generic;
-using MySql.Data.MySqlClient;
 
 namespace WebAPI.integrationlayer
-
 {
-    public class MySQLDBConnection : IDBConnection
+    public class AzureSQLDBConnection : IDBConnection
     {
 
-        private string Server { get; set; } = "localhost";
-        private string Port { get; set; } = "3306";
-        private string DatabaseName { get; set; } = "toDoListSchema";
-        private string UserName { get; set; } = "devuser";
-        private string Password { get; set; } = "abc123";
+        private string Server { get; set; } = "";
+        private string InitialCatalog { get; set; } = "todolistDatabase";
+        private string PersistSecurityInfo { get; set; } = "False";
+        private string UserID { get; set; } = "";
+        private string Password { get; set; } = "";
+        private string MultipleActiveResultSets { get; set; } = "False";
+        private string Encrypt { get; set; } = "True";
+        private string TrustServerCertificate { get; set; } = "False";
+        private string ConnectionTimeout { get; set; } = "30";
 
-        private MySqlConnection mySQLConnection { get; set; }
+        private SqlConnection azureConnection { get; set; }
 
         public void CreateNewConnection()
         {
-            if (mySQLConnection == null)
+            if (azureConnection == null)
             {
-                mySQLConnection = new MySqlConnection(string.Format(
-                    "Server={0}; Port={1}; database={2}; UID={3}; password={4}",
-                    Server, Port, DatabaseName, UserName, Password));
-                mySQLConnection.Open();
+                azureConnection = new SqlConnection(string.Format(
+                    "Server={0};" +
+                    "Initial Catalog={1};" +
+                    "Persist Security Info={2};" +
+                    "User ID={3};" +
+                    "Password={4};" +
+                    "MultipleActiveResultSets={5};" +
+                    "Encrypt={6};" +
+                    "TrustServerCertificate={7};" +
+                    "Connection Timeout={8};",
+                    Server, InitialCatalog, PersistSecurityInfo, UserID, Password,
+                    MultipleActiveResultSets, Encrypt, TrustServerCertificate, ConnectionTimeout));
+                azureConnection.Open();
             }
         }
 
@@ -31,9 +43,9 @@ namespace WebAPI.integrationlayer
         {
             CreateNewConnection();
 
-            MySqlCommand myCommand = mySQLConnection.CreateCommand();
-            MySqlTransaction myTransaction = mySQLConnection.BeginTransaction();
-            myCommand.Connection = mySQLConnection;
+            SqlCommand myCommand = azureConnection.CreateCommand();
+            SqlTransaction myTransaction = azureConnection.BeginTransaction();
+            myCommand.Connection = azureConnection;
             myCommand.Transaction = myTransaction;
 
             try
@@ -52,36 +64,36 @@ namespace WebAPI.integrationlayer
                 {
                     myTransaction.Rollback();
                 }
-                catch (MySqlException ex)
+                catch (SqlException ex)
                 {
                     if (myTransaction.Connection != null)
                     {
                         Console.WriteLine("An exception of type " + ex.GetType() +
                         " was encountered while attempting to roll back the transaction.");
                         Console.WriteLine("Rollback exception details: " + ex.GetBaseException());
-                        mySQLConnection.Close();
+                        azureConnection.Close();
                     }
                 }
 
                 Console.WriteLine("An exception of type " + e.GetType() +
                 " was encountered while inserting data.");
                 Console.WriteLine("Exception details: " + e.GetBaseException());
-                mySQLConnection.Close();
+                azureConnection.Close();
             }
         }
 
         public void AddNewItem(Item item)
         {
-            Console.WriteLine("MySQL, called AddNewItem, with the new object: " + item.itemId + ", " + item.itemName + ", " + item.done);
-            string[] sqlStrings = { string.Format("INSERT INTO Item(itemId, itemName, done) VALUES('{0}', '{1}', '{2}')", item.itemId, item.itemName, item.done ? 1 : 0) };
+            Console.WriteLine("AzureSQL, called AddNewItem, with the new object: " + item.itemId + ", " + item.itemName + ", " + item.done);
+            string[] sqlStrings = { string.Format("INSERT INTO [dbo].[Item]([itemId], [itemName], [done]) VALUES('{0}', '{1}', '{2}')", item.itemId, item.itemName, item.done ? 1 : 0) };
             RunSqlTransaction(sqlStrings);
             Close();
         }
 
         public void UpdateItem(Item item)
         {
-            Console.WriteLine("MySQL, called UpdateItem()");
-            string[] sqlStrings = { string.Format("UPDATE Item SET itemName = '{0}', done = '{1}' WHERE itemId = '{2}'", item.itemName, item.done ? 1 : 0, item.itemId) };
+            Console.WriteLine("AzureSQL, called UpdateItem()");
+            string[] sqlStrings = { string.Format("UPDATE [dbo].[Item] SET [itemName] = '{0}', [done] = '{1}' WHERE [itemId] = '{2}'", item.itemName, item.done ? 1 : 0, item.itemId) };
             RunSqlTransaction(sqlStrings);
             Close();
         }
@@ -89,44 +101,44 @@ namespace WebAPI.integrationlayer
 
         public void DeleteItem(int id)
         {
-            Console.WriteLine("MySQL, called DeleteItem() with itemId: " + id);
-            string[] sqlStrings = { string.Format("DELETE FROM Item WHERE itemId = '{0}'", id) };
+            Console.WriteLine("AzureSQL, called DeleteItem() with itemId: " + id);
+            string[] sqlStrings = { string.Format("DELETE FROM [dbo].[Item] WHERE [itemId] = '{0}'", id) };
             RunSqlTransaction(sqlStrings);
             Close();
         }
 
         public void DeleteAllDoneItems()
         {
-            Console.WriteLine("MySQL, called DeleteAllDoneItems()");
-            string[] sqlStrings = { string.Format("DELETE FROM Item WHERE done = 1") };
+            Console.WriteLine("AzureSQL, called DeleteAllDoneItems()");
+            string[] sqlStrings = { string.Format("DELETE FROM [dbo].[Item] WHERE [done] = 1") };
             RunSqlTransaction(sqlStrings);
             Close();
         }
 
         public void DeleteAllItems()
         {
-            Console.WriteLine("MySQL, called DeleteAllItems()");
-            string[] sqlStrings = { string.Format("DELETE FROM Item") };
+            Console.WriteLine("AzureSQL, called DeleteAllItems()");
+            string[] sqlStrings = { string.Format("DELETE FROM [dbo].[Item]") };
             RunSqlTransaction(sqlStrings);
             Close();
         }
 
         public List<Item> GetAllItems()
         {
-            Console.WriteLine("MySQL, called GetAllItems()");
+            Console.WriteLine("AzureSQL, called GetAllItems()");
             CreateNewConnection();
             List<string[]> tableData = new();
             try
             {
-                string query = "SELECT itemId, itemName, done FROM Item ORDER BY itemId ASC";
-                var cmd = new MySqlCommand(query, mySQLConnection);
+                string query = "SELECT [itemId], [itemName], [done] FROM [dbo].[Item] ORDER BY [itemId] ASC";
+                var cmd = new SqlCommand(query, azureConnection);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
                     string[] columns = new string[3];
-                    columns[0] = reader.GetString(0);
-                    columns[1] = reader.GetString(1);
-                    columns[2] = reader.GetString(2);
+                    columns[0] = reader.GetSqlInt32(0).ToString();
+                    columns[1] = reader.GetSqlString(1).ToString();
+                    columns[2] = reader.GetSqlByte(2).ToString();
                     tableData.Add(columns);
                     Console.WriteLine(columns[0] + ", " + columns[1] + ", " + columns[2]);
                 }
@@ -136,26 +148,26 @@ namespace WebAPI.integrationlayer
             {
                 Console.WriteLine("An exception was encountered of type " + e.GetType());
                 Console.WriteLine("Exception details: " + e.GetBaseException());
-                mySQLConnection.Close();
+                azureConnection.Close();
             }
             return ItemMapper.MapToListOfItems(tableData);
         }
 
         public Item GetSingleItem(int id)
         {
-            Console.WriteLine("MySQL, called GetSingleItem()");
+            Console.WriteLine("AzureSQL, called GetSingleItem()");
             CreateNewConnection();
             string[] itemColumn = new string[3];
             try
             {
-                string query = string.Format("SELECT itemId, itemName, done FROM Item WHERE itemId = '{0}'", id);
-                var cmd = new MySqlCommand(query, mySQLConnection);
+                string query = string.Format("SELECT [itemId], [itemName], [done] FROM [dbo].[Item] WHERE [itemId] = '{0}'", id);
+                var cmd = new SqlCommand(query, azureConnection);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    itemColumn[0] = reader.GetString(0);
-                    itemColumn[1] = reader.GetString(1);
-                    itemColumn[2] = reader.GetString(2);
+                    itemColumn[0] = reader.GetSqlInt32(0).ToString();
+                    itemColumn[1] = reader.GetSqlString(1).ToString();
+                    itemColumn[2] = reader.GetSqlByte(2).ToString();
                     //Console.WriteLine(itemColumn[0] + ", " + itemColumn[1] + ", " + itemColumn[2]);
                 }
                 reader.Close();
@@ -164,7 +176,7 @@ namespace WebAPI.integrationlayer
             {
                 Console.WriteLine("An exception was encountered of type " + e.GetType());
                 Console.WriteLine("Exception details: " + e.GetBaseException());
-                mySQLConnection.Close();
+                azureConnection.Close();
             }
             string[] item = String.IsNullOrEmpty(itemColumn[0]) ? null : itemColumn;
             return ItemMapper.MapToItem(item);
@@ -175,8 +187,8 @@ namespace WebAPI.integrationlayer
             CreateNewConnection();
             try
             {
-                string query = "SELECT itemId, itemName, done FROM Item";
-                var cmd = new MySqlCommand(query, mySQLConnection);
+                string query = "SELECT [itemId], [itemName], [done] FROM [dbo].[Item]";
+                var cmd = new SqlCommand(query, azureConnection);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -192,14 +204,15 @@ namespace WebAPI.integrationlayer
             {
                 Console.WriteLine("An exception was encountered of type " + e.GetType());
                 Console.WriteLine("Exception details: " + e.GetBaseException());
-                mySQLConnection.Close();
+                azureConnection.Close();
             }
         }
 
         public void Close()
         {
-            mySQLConnection.Close();
-            mySQLConnection = null;
+            azureConnection.Close();
+            azureConnection = null;
         }
+
     }
 }

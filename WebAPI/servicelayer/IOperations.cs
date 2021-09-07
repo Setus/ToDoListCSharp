@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace ToDoList.servicelayer
+namespace WebAPI.servicelayer
 {
     public interface IOperations
     {

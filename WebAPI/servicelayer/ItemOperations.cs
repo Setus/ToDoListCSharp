@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using ToDoList.integrationlayer;
-using ToDoList.servicelayer;
-using WebAPI;
+using WebAPI.integrationlayer;
+using WebAPI.servicelayer;
+using WebAPI.modellayer;
 
-namespace ToDoList
+namespace WebAPI
 {
     public class ItemOperations : IOperations
     {
@@ -14,13 +15,22 @@ namespace ToDoList
         public ItemOperations(IEnumerable<IDBConnection> dbConnections)
         {
             var connections = dbConnections.ToArray();
-            if (AppConfigUtil.ReadDatabaseSetting("DatabaseType", true).Equals("mysql"))
+            string databaseType = AppConfigUtil.ReadDatabaseSetting("DatabaseType", true);
+            if (databaseType.Equals(DatabaseType.mysql.ToString()))
             {
                 dbConnection = connections[0];
             }
-            else
+            else if (databaseType.Equals(DatabaseType.mongodb.ToString()))
             {
                 dbConnection = connections[1];
+            }
+            else if (databaseType.Equals(DatabaseType.azuresql.ToString()))
+            {
+                dbConnection = connections[2];
+            }
+             else
+            {
+                throw new ArgumentException("The DatabaseType inputed in the app.config file does not correspond to any permitted value");
             }
         }
 

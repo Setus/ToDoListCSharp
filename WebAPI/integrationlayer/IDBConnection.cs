@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ToDoList.integrationlayer
+namespace WebAPI.integrationlayer
 {
     public interface IDBConnection
     {

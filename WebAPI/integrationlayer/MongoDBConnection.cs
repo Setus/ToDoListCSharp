@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace ToDoList.integrationlayer
+namespace WebAPI.integrationlayer
 {
     public class MongoDBConnection : IDBConnection
     {

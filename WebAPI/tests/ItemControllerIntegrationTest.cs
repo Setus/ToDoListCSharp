@@ -4,9 +4,9 @@ using System.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using ToDoList;
-using ToDoList.integrationlayer;
+using WebAPI.integrationlayer;
 using WebAPI.Controllers;
+using WebAPI.modellayer;
 
 namespace WebAPI
 {
@@ -14,29 +14,31 @@ namespace WebAPI
     [TestFixture]
     class ItemControllerIntegrationTest
     {
-        string mysql = "mysql";
-        string mongodb = "mongodb";
+
         List<IDBConnection> iDBConnections = null;
 
         [Test]
         public void TestCRUDOperations()
         {
-            TestCRUDOperations(mysql);
-            TestCRUDOperations(mongodb);
+            TestCRUDOperations(DatabaseType.mysql.ToString());
+            TestCRUDOperations(DatabaseType.mongodb.ToString());
+            TestCRUDOperations(DatabaseType.azuresql.ToString());
         }
 
         [Test]
         public void TestGetAllItems()
         {
-            TestGetAllItems(mysql);
-            TestGetAllItems(mongodb);
+            TestGetAllItems(DatabaseType.mysql.ToString());
+            TestGetAllItems(DatabaseType.mongodb.ToString());
+            TestGetAllItems(DatabaseType.azuresql.ToString());
         }
 
         [Test]
         public void TestDeleteAllDone()
         {
-            TestDeleteAllDone(mysql);
-            TestDeleteAllDone(mongodb);
+            TestDeleteAllDone(DatabaseType.mysql.ToString());
+            TestDeleteAllDone(DatabaseType.mongodb.ToString());
+            TestDeleteAllDone(DatabaseType.azuresql.ToString());
         }
 
         public void TestCRUDOperations(string databasetype)
@@ -165,6 +167,7 @@ namespace WebAPI
                 iDBConnections = new();
                 iDBConnections.Add(new MySQLDBConnection());
                 iDBConnections.Add(new MongoDBConnection());
+                iDBConnections.Add(new AzureSQLDBConnection());
             }
             return iDBConnections;
         }

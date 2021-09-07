@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ToDoList;
-using ToDoList.integrationlayer;
-using ToDoList.servicelayer;
+using WebAPI.integrationlayer;
+using WebAPI.servicelayer;
 
 namespace WebAPI
 {
@@ -42,6 +41,7 @@ namespace WebAPI
             services.AddScoped<IOperations, ItemOperations>();
             services.AddSingleton<IDBConnection, MySQLDBConnection>();
             services.AddSingleton<IDBConnection, MongoDBConnection>();
+            services.AddSingleton<IDBConnection, AzureSQLDBConnection>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

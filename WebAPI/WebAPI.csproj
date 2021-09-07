@@ -20,6 +20,7 @@
     <None Remove="MongoDB.Driver" />
     <None Remove="MySql.Data" />
     <None Remove="modellayer\" />
+    <None Remove="ADO.Net.Client.Core" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -31,6 +32,7 @@
     <PackageReference Include="MongoDB.Bson" Version="2.13.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.13.1" />
     <PackageReference Include="MySql.Data" Version="8.0.26" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="tests\" />
